@@ -1,4 +1,4 @@
-# Raytracer
+# Phoenix Raytracer
 Copyright (c) 2017 Bart Massey
 
 Long ago (1991) I wrote a raytracer in C++
@@ -12,7 +12,8 @@ This repo represents my "port" of that raytracer to Rust.
 This isn't a particularly literal translation: I tried to
 use best practices in Rust and SE rather than preserve the
 details. The architecture is similar, and the algorithms are
-the same.
+the same. (Thus, it's really more like a rebirth from the
+ashes---hence the name.)
 
 ## Issues
 
