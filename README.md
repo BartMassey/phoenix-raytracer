@@ -1,4 +1,5 @@
 # Raytracer
+Copyright (c) 2017 Bart Massey
 
 Long ago (1991) I wrote a raytracer in C++
 <http://github.com/BartMassey/ancient-raytracer> for a
@@ -19,3 +20,9 @@ the same.
   thread-safe PRNG operation, and I didn't need a
   particularly good generator. So I used a 64-bit LCG with
   unsafe global state.
+
+## License
+
+This program is licensed under the "3-clause ('new') BSD
+License". Please see the file COPYING in this distribution
+for license terms.
