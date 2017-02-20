@@ -3,6 +3,9 @@
 // Please see the file COPYING in the source
 // distribution of this software for license terms.
 
+//! Library for raytracing. This contains most of the
+//! functionality of a raytracer.
+
 mod infra;
 
 pub mod frandom;

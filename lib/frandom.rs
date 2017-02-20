@@ -3,8 +3,10 @@
 // Please see the file COPYING in the source
 // distribution of this software for license terms.
     
-// Terrible PRNG because Rust and global state.
-// http://nuclear.llnl.gov/CNP/rng/rngman/node4.html
+//! Terrible LCG PRNG because Rust and global state.
+//! http://nuclear.llnl.gov/CNP/rng/rngman/node4.html
+
+/// Produce a pseudo-random integer.
 pub fn random() -> u64 {
     unsafe {
         static mut STATE: u64 = 0x123456789abcdef0u64;
@@ -15,6 +17,8 @@ pub fn random() -> u64 {
     }
 }
 
+/// Produce a pseudo-random floating point number in the
+/// range [0..1] with 32 bits of precision.
 pub fn frandom() -> f64 {
     (random() & 0xffffffffu64) as f64 / (0xffffffffu64 as f64)
 }

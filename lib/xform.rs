@@ -3,26 +3,36 @@
 // Please see the file COPYING in the source
 // distribution of this software for license terms.
 
-// Transformation matrices
-// From 2/91 C++
+//! 4x4 transformations. Based very loosely on the
+//! 1991 implementation.
 
 use std::ops::{Mul, MulAssign};
 
 use point::Point;
 
+/// Convenience type for 4x4 matrices.
 type XFMatrix = [[f64; 4]; 4];
 
+/// A transformation has a forward matrix and an inverse
+/// matrix, maintained in parallel for efficiency and ease
+/// of implementation.
 #[derive(Clone)]
 pub struct XForm {
-    m: XFMatrix,
+    /// Forward transformation matrix.
+    m: XFMatrix,  
+    /// Inverse transformation matrix.
     mi: XFMatrix
 }
 
+/// All-zeros transformation matrix.
 const NULL_MATRIX: XFMatrix = [[0.0; 4]; 4];
+/// All-zeros transform.
 const NULL_XFORM: XForm =
     XForm { m: NULL_MATRIX, mi: NULL_MATRIX };
 
 impl XForm {
+
+    /// Identity transformation.
     pub fn identity() -> Self {
         let mut x = NULL_XFORM;
         for r in 0..4 {
@@ -35,6 +45,9 @@ impl XForm {
         };
         x
     }
+
+    /// Rotation transformation around the x axis by given
+    /// angle in radians.
     pub fn rotation_x(angle: f64) -> Self {
         let ca = angle.cos();
         let sa = angle.sin();
@@ -54,6 +67,8 @@ impl XForm {
         x
     }
 
+    /// Rotation transformation around the y axis by given
+    /// angle in radians.
     pub fn rotation_y(angle: f64) -> Self {
         let ca = angle.cos();
         let sa = angle.sin();
@@ -73,6 +88,8 @@ impl XForm {
         x
     }
 
+    /// Rotation transformation around the z axis by given
+    /// angle in radians.
     pub fn rotation_z(angle: f64) -> Self {
         let ca = angle.cos();
         let sa = angle.sin();
@@ -92,6 +109,7 @@ impl XForm {
         x
     }
 
+    /// Translation transformation by given offset.
     pub fn translation(trans: Point) -> Self {
         assert!(trans.len() == 3);
         let mut x = NULL_XFORM;
@@ -112,6 +130,7 @@ impl XForm {
         x
     }
 
+    /// Scaling transformation by given scale.
     pub fn scaling(scale: Point) -> Self {
         assert!(scale.len() == 3);
         let mut x = NULL_XFORM;
@@ -126,12 +145,16 @@ impl XForm {
         x
     }
 
+    /// Invert the transformation by exchanging the
+    /// forward and inverse matrices.
     pub fn invert(&mut self) {
         let tmp = self.m;
         self.m = self.mi;
         self.mi = tmp;
     }
 
+    /// Produce the inverse of a transformation with
+    /// the forward and inverse matrices interchanged.
     pub fn inverse(&self) -> Self {
         let mut tmp = self.clone();
         tmp.invert();
@@ -142,6 +165,8 @@ impl XForm {
 impl Mul<Point> for XForm {
     type Output = Point;
 
+    /// Apply the transformation to the given Point
+    /// by matrix-vector multiplication.
     fn mul(self, rhs: Point) -> Point {
         assert!(rhs.len() == 4);
         let mut t = Point::new(vec![0.0;4]);
@@ -157,6 +182,10 @@ impl Mul<Point> for XForm {
 impl Mul for XForm {
     type Output = XForm;
 
+    /// Compose two transformations by matrix multiplication
+    /// of the forward transformation matrix and reversed
+    /// matrix multiplication of the inverse transformation
+    /// matrix using `*` notation.
     fn mul(self, rhs: XForm) -> XForm {
         let mut t = NULL_XFORM;
         for i in 0..4 {
@@ -172,6 +201,11 @@ impl Mul for XForm {
 }
 
 impl MulAssign for XForm {
+    /// Compose the transformation with a given
+    /// transformation by matrix multiplication of the
+    /// forward transformation matrix and reversed matrix
+    /// multiplication of the inverse transformation matrix
+    /// using `*=` notation.
     fn mul_assign(&mut self, rhs: XForm) {
         let mut t = NULL_XFORM;
         for i in 0..4 {
