@@ -15,7 +15,7 @@ use std::ops::{Mul, Neg, Add, Sub,
 
 /// A Point has dynamic length, which means care
 /// is required in using it.
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct Point {
     /// Coordinates of the Point.
     c: [f64;4]   
@@ -121,9 +121,10 @@ impl Mul for Point {
     type Output = f64;
     
     /// Return the dot product of two Points using `*` notation.
+    /// The points should be homogenous: the z coordinate is ignored.
     fn mul(self, rhs: Self) -> f64 {
         let mut r: f64 = 0.0;
-        for i in 0..self.c.len() {
+        for i in 0..self.c.len()-1 {
             r += self.c[i] * rhs.c[i];
         };
         r
