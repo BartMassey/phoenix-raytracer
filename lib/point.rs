@@ -268,9 +268,3 @@ pub const Z: usize = 2;
 /// Symbolic representation of w coordinate index of a
 /// 4-coordinate point.  (Homogeneous coordinate.)
 pub const W: usize = 3;
-/// Symbolic representation of red coordinate index of an RGB point.
-pub const R: usize = 0;
-/// Symbolic representation of green coordinate index of an RGB point.
-pub const G: usize = 1;
-/// Symbolic representation of blue coordinate index of an RGB point.
-pub const B: usize = 2;

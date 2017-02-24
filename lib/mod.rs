@@ -11,6 +11,9 @@ mod infra;
 pub mod frandom;
 pub use self::frandom::*;
 
+pub mod color;
+pub use self::color::*;
+
 pub mod point;
 pub use self::point::*;
 
