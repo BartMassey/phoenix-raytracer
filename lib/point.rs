@@ -18,7 +18,7 @@ use std::ops::{Mul, Neg, Add, Sub,
 #[derive(Clone)]
 pub struct Point {
     /// Coordinates of the Point.
-    c: Vec<f64>   
+    c: [f64;4]   
 }
 
 /// Operations on Points.
@@ -26,8 +26,8 @@ impl Point {
 
     /// Create a new Point from a vector of floats.
     /// (This should probably be a macro.)
-    pub fn new(cs: Vec<f64>) -> Self {
-        Point { c : cs.clone() }
+    pub fn new(cs: [f64;4]) -> Self {
+        Point { c : cs }
     }
 
     /// Convert the Point to its coordinate-wise negation.
@@ -37,27 +37,15 @@ impl Point {
         }
     }
 
-    /// Cross product of two 3-coordinate Points. (Operator
-    /// `*` is dot product.)
+    /// Cross product of two Points, which should be
+    /// homogenous. (Operator `*` is dot product.)
     pub fn cross_product(&self, p: &Self) -> Self {
         assert!(self.c.len() == 3 && p.c.len() == 3 );
-        let r: Vec<f64> =
-            vec![
-             self.c[1] * p.c[2] - self.c[2] * p.c[1],
-             self.c[2] * p.c[0] - self.c[0] * p.c[2],
-             self.c[0] * p.c[1] - self.c[1] * p.c[0]];
-        Point::new(r)
-    }
-
-    /// Coordinate-wise produce of two Points. (Operator `*`
-    /// is dot product.)
-    pub fn pointwise_product(&self, p: &Self) -> Self {
-        let nc = self.c.len();
-        assert_eq!(nc, p.c.len());
-        let mut r: Vec<f64> =  Vec::new();
-        for i in 0..nc {
-            r.push(self.c[i] * p.c[i]);
-        };
+        let r = [
+          self.c[1] * p.c[2] - self.c[2] * p.c[1],
+          self.c[2] * p.c[0] - self.c[0] * p.c[2],
+          self.c[0] * p.c[1] - self.c[1] * p.c[0],
+          1.0 ];
         Point::new(r)
     }
 
@@ -105,40 +93,6 @@ impl Point {
         r
     }
 
-    /// Produce an (n+1)-coordinate Point from an
-    /// n-coordinate Point by appending the given
-    /// coordinate.
-    pub fn dilation(&self, nc: f64) -> Self {
-        let mut r = self.clone();
-        r.c.push(nc);
-        r
-    }
-
-
-    /// Convert the n-coordinate Point to an
-    /// (n+1)-coordinate Point by appending the given
-    /// coordinate.
-    pub fn dilate(&mut self, nc: f64) {
-        assert!(self.c.len() < 4);
-        self.c.push(nc);
-    }
-
-    /// Produce an (n-1)-coordinate Point from an
-    /// n-coordinate Point by deleting the final
-    /// coordinate.
-    pub fn contraction(&self) -> Self {
-        let mut r = self.clone();
-        let _ = r.c.pop();
-        r
-    }
-
-    /// Convert the n-coordinate Point to an
-    /// (n-1)-coordinate Point by deleting the
-    /// final coordinate.
-    pub fn contract(&mut self) {
-        let _ = self.c.pop();
-    }
-
     /// Return the number of coordinates of the Point.
     pub fn len(&self) -> usize {
         self.c.len()
@@ -169,9 +123,7 @@ impl Mul for Point {
     /// Return the dot product of two Points using `*` notation.
     fn mul(self, rhs: Self) -> f64 {
         let mut r: f64 = 0.0;
-        let nc = self.c.len();
-        assert_eq!(nc, rhs.c.len());
-        for i in 0..nc {
+        for i in 0..self.c.len() {
             r += self.c[i] * rhs.c[i];
         };
         r
@@ -242,9 +194,7 @@ impl AddAssign for Point {
     /// corresponding coordinate of the given Point using `+=`
     /// notation. (Vector sum.)
     fn add_assign(&mut self, rhs: Self) {
-        let nc = self.c.len();
-        assert_eq!(nc, rhs.c.len());
-        for i in 0..nc {
+        for i in 0..self.c.len() {
             self.c[i] += rhs.c[i];
         };
     }

@@ -169,7 +169,7 @@ impl Mul<Point> for XForm {
     /// by matrix-vector multiplication.
     fn mul(self, rhs: Point) -> Point {
         assert!(rhs.len() == 4);
-        let mut t = Point::new(vec![0.0;4]);
+        let mut t = Point::new([0.0;4]);
         for r in 0..4 {
             for c in 0..4 {
                 t[r] += self.m[r][c] * rhs[c];
