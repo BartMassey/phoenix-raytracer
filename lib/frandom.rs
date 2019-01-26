@@ -6,19 +6,19 @@
 //! Terrible LCG PRNG because Rust and global state.
 //! http://nuclear.llnl.gov/CNP/rng/rngman/node4.html
 
-/// Produce a pseudo-random integer.
-pub fn random() -> u64 {
+/// Produce a pseudo-random integer. Not thread-safe since
+/// data race can occur.
+unsafe pub fn random() -> u64 {
     static mut STATE: u64 = 0x123456789abcdef0u64;
-    unsafe {
-        STATE = STATE
-            .wrapping_mul(2862933555777941757u64)
-            .wrapping_add(3037000493u64);
-        STATE
-    }
+    STATE = STATE
+        .wrapping_mul(2862933555777941757u64)
+        .wrapping_add(3037000493u64);
+    STATE
 }
 
 /// Produce a pseudo-random floating point number in the
-/// range [0..1] with 32 bits of precision.
-pub fn frandom() -> f64 {
+/// range [0..1] with 32 bits of precision. Not thread-safe
+/// since uses `random()`.
+unsafe pub fn frandom() -> f64 {
     (random() & 0xffffffffu64) as f64 / (0xffffffffu64 as f64)
 }
