@@ -8,9 +8,11 @@
 use color::Color;
 use point::Point;
 
-/// Scene model for rendering. So far, stored as naïve arrays,
-/// rather than octrees or something.
+/// Information about a light source. Right now this is a
+/// point source.
 pub struct Light {
+    /// Position of light source.
     pub posn: Point,
+    /// Luminance of light source.
     pub color: Color
 }

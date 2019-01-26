@@ -6,13 +6,13 @@
 //! Model structure.
 
 use light::Light;
-use shapes::shape::Shape;
+use thing::Thing;
 use color::Color;
 
 /// Scene model for rendering. So far, stored as naïve arrays,
 /// rather than octrees or something.
 pub struct Model<'a> {
-    pub lights: Vec<&'a Light>,
-    pub shapes: Vec<&'a Shape>,
+    pub lights: Vec<Light>,
+    pub things: Vec<Thing<'a>>,
     pub ambient: Color
 }

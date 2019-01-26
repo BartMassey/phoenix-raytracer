@@ -8,12 +8,12 @@
 
 /// Produce a pseudo-random integer.
 pub fn random() -> u64 {
+    static mut STATE: u64 = 0x123456789abcdef0u64;
     unsafe {
-        static mut STATE: u64 = 0x123456789abcdef0u64;
-        let tmp =
-          STATE.wrapping_mul(2862933555777941757u64) + 3037000493u64;
-        STATE = tmp;
-        tmp
+        STATE = STATE
+            .wrapping_mul(2862933555777941757u64)
+            .wrapping_add(3037000493u64);
+        STATE
     }
 }
 

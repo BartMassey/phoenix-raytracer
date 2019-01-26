@@ -23,11 +23,14 @@ pub use self::xform::*;
 pub mod light;
 pub use self::light::*;
 
-pub mod model;
-pub use self::model::*;
-
 pub mod textures;
 pub use self::textures::texture::Texture;
 
 pub mod shapes;
 pub use self::shapes::shape::Shape;
+
+pub mod thing;
+pub use self::thing::*;
+
+pub mod model;
+pub use self::model::*;
