@@ -6,19 +6,26 @@
 //! Terrible LCG PRNG because Rust and global state.
 //! http://nuclear.llnl.gov/CNP/rng/rngman/node4.html
 
-/// Produce a pseudo-random integer. Not thread-safe since
-/// data race can occur.
-pub unsafe fn random() -> u64 {
-    static mut STATE: u64 = 0x123456789abcdef0u64;
-    STATE = STATE
-        .wrapping_mul(2862933555777941757u64)
-        .wrapping_add(3037000493u64);
-    STATE
+use std::sync::atomic::{AtomicU64, Ordering::SeqCst};
+
+/// Produce a pseudo-random integer. Will likely be slow in
+/// the presence of contention.
+pub fn random() -> u64 {
+    static STATE: AtomicU64 = AtomicU64::new(0x123456789abcdef0u64);
+    loop {
+        let current = STATE
+            .load(SeqCst);
+        let new = current
+            .wrapping_mul(2862933555777941757u64)
+            .wrapping_add(3037000493u64);
+        if STATE.compare_and_swap(current, new, SeqCst) == current {
+            return new;
+        }
+    }
 }
 
 /// Produce a pseudo-random floating point number in the
-/// range [0..1] with 32 bits of precision. Not thread-safe
-/// since uses `random()`.
-pub unsafe fn frandom() -> f64 {
-    (random() & 0xffffffffu64) as f64 / (0xffffffffu64 as f64)
+/// range [0..1].
+pub fn frandom() -> f64 {
+    random() as f64 / (!0u64 as f64)
 }
