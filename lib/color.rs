@@ -6,6 +6,14 @@
 //! Implementation of color as a 3-vector of floating-point
 //! RGB values.
 
+
+/// Symbolic representation of red coordinate index of a Color.
+pub const R: usize = 0;
+/// Symbolic representation of green coordinate index of a Color.
+pub const G: usize = 1;
+/// Symbolic representation of blue coordinate index of a Color.
+pub const B: usize = 2;
+
 use std::ops::{Mul, Add, Sub,
                MulAssign, AddAssign, SubAssign,
                Index, IndexMut};
@@ -124,10 +132,3 @@ impl SubAssign for Color {
         };
     }
 }
-
-/// Symbolic representation of red coordinate index of a Color.
-pub const R: usize = 0;
-/// Symbolic representation of green coordinate index of a Color.
-pub const G: usize = 1;
-/// Symbolic representation of blue coordinate index of a Color.
-pub const B: usize = 2;

@@ -13,6 +13,16 @@ use std::ops::{Mul, Neg, Add, Sub,
                MulAssign, AddAssign, SubAssign,
                Index, IndexMut};
 
+/// Symbolic representation of x coordinate index of a point.
+pub const X: usize = 0;
+/// Symbolic representation of y coordinate index of a point.
+pub const Y: usize = 1;
+/// Symbolic representation of z coordinate index of a point.
+pub const Z: usize = 2;
+/// Symbolic representation of w coordinate index of a
+/// 4-coordinate point.  (Homogeneous coordinate.)
+pub const W: usize = 3;
+
 /// A Point has dynamic length, which means care
 /// is required in using it.
 #[derive(Clone, Copy)]
@@ -209,13 +219,3 @@ impl SubAssign for Point {
         *self += -rhs;
     }
 }
-
-/// Symbolic representation of x coordinate index of a point.
-pub const X: usize = 0;
-/// Symbolic representation of y coordinate index of a point.
-pub const Y: usize = 1;
-/// Symbolic representation of z coordinate index of a point.
-pub const Z: usize = 2;
-/// Symbolic representation of w coordinate index of a
-/// 4-coordinate point.  (Homogeneous coordinate.)
-pub const W: usize = 3;

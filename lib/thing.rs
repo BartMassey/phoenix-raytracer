@@ -13,7 +13,7 @@ use xform::*;
 /// its position, size and orientation.
 pub struct Thing<'a> {
     /// Shape of thing.
-    pub shape: &'a Shape,
-    pub texture: &'a Texture,
+    pub shape: &'a dyn Shape,
+    pub texture: &'a dyn Texture,
     pub xform: XForm
 }
