@@ -18,9 +18,12 @@ pub fn random() -> u64 {
         let new = current
             .wrapping_mul(2862933555777941757u64)
             .wrapping_add(3037000493u64);
-        if matches!(STATE.compare_exchange(current, new, SeqCst, SeqCst), Ok(current)) {
-            return new;
+        loop {
+            if STATE.compare_exchange(current, new, SeqCst, SeqCst).is_ok() {
+                return new;
+            }
         }
+
     }
 }
 
