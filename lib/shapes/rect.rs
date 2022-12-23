@@ -20,7 +20,7 @@ impl Shape for Rect {
     /// Iff the incoming ray is pointing in the right direction
     /// and hits inside the rectangle, return a homogeneous
     /// point representing its xy coordinate.
-    fn intersect(&self, at: &Point, dirn: &Point) -> Option<Point> {
+    fn intersect(&self, ray: &Ray) -> Option<Ray> {
         let angle = -(*at) * *dirn;
         if angle < TINY {
             return None;
