@@ -17,6 +17,7 @@ pub mod textures;
 pub mod shapes;
 pub mod thing;
 pub mod model;
+pub mod ray;
 
 pub use self::frandom::*;
 pub use self::color::*;
@@ -27,3 +28,4 @@ pub use self::textures::texture::Texture;
 pub use self::shapes::shape::Shape;
 pub use self::thing::*;
 pub use self::model::*;
+pub use self::ray::*;

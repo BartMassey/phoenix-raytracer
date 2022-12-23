@@ -5,11 +5,11 @@
 
 //! Generic interface to shapes.
 
-pub use ray::Ray;
+pub use crate::ray::Ray;
 
 pub trait Shape {
     /// Given a ray specified by origin and unit direction,
     /// return the location and unit direction of intersection
     /// in texture coordinates, if intersection happens.
-    pub fn intersect(&self, ray: &Ray) -> Option<Ray>;
+    fn intersect(&self, ray: &Ray) -> Option<Ray>;
 }
