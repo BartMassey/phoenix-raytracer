@@ -5,14 +5,12 @@
 
 //! Light structure.
 
-use color::Color;
 use point::Point;
 
-/// Information about a light source. Right now this is a
-/// point source.
-pub struct Light {
+/// Information about a point light source.
+pub struct PointLight {
     /// Position of light source.
-    pub posn: Point,
+    pub loc: Point,
     /// Luminance of light source.
-    pub color: Color
+    pub intensity: Point,
 }

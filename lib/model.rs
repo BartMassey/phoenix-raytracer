@@ -1,18 +1,23 @@
-// Copyright © 1991 Bart Massey
-// [This program is licensed under the "3-clause ('new') BSD License"]
-// Please see the file COPYING in the source
-// distribution of this software for license terms.
+use crate::*;
 
-//! Model structure.
-
-use light::Light;
-use thing::Thing;
-use color::Color;
-
-/// Scene model for rendering. So far, stored as naïve arrays,
+/// Scene model for rendering. So far stored as naïve arrays
 /// rather than octrees or something.
-pub struct Model<'a> {
-    pub lights: Vec<Light>,
-    pub things: Vec<Thing<'a>>,
-    pub ambient: Color
+pub struct Model {
+    pub eye: Point,
+    pub the_light: Light,
+    pub scene: Vec<Thing>,
+    pub bg: Point,
+    pub maxdepth: usize,
+}
+
+impl Model {
+    fn new(eye: Point, the_light: Light, scene: Scene, bg: Point) -> Self {
+        Self {
+            eye,
+            the_light,
+            scene,
+            bg,
+            maxdepth: 10,
+        }
+    }
 }

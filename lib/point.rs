@@ -28,16 +28,16 @@ pub const W: usize = 3;
 #[derive(Clone, Copy)]
 pub struct Point {
     /// Coordinates of the Point.
-    c: [f64;4]   
+    pub c: Vec<f64>,
 }
 
 /// Operations on Points.
 impl Point {
 
-    /// Create a new Point from a vector of floats.
+    /// Create a new Point from an array of floats.
     /// (This should probably be a macro.)
-    pub fn new(cs: [f64;4]) -> Self {
-        Point { c : cs }
+    pub fn new<N: usize>(cs: [f64; N]) -> Self {
+        Point { c : cs.to_vec() }
     }
 
     /// Convert the Point to its coordinate-wise negation.

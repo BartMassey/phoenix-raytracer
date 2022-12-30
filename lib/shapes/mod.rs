@@ -1,12 +1,20 @@
-// Copyright © 1991 Bart Massey
-// [This program is licensed under the "3-clause ('new') BSD License"]
-// Please see the file COPYING in the source
-// distribution of this software for license terms.
+pub mod sphere;
+pub use sphere::*;
 
-//! Module of shapes of objects.
+pub mod poly;
+pub use poly::*;
 
-pub mod shape;
-pub use self::shape::Shape;
+use crate::*;
 
-pub mod rect;
-pub use self::rect::Rect;
+pub struct Intersection {
+  pub t: float,
+  pub normal: Point,
+  pub at: Point,
+}
+
+pub trait Shape {
+    /// Given a ray specified by origin and unit direction,
+    /// return the location and unit direction of intersection
+    /// in texture coordinates, if intersection happens.
+    fn intersect(&self, xform: &XForm, ray: &Ray) -> Option<Intersection>;
+}
