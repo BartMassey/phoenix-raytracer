@@ -4,7 +4,7 @@
 // distribution of this software for license terms.
 
 use infra::TINY;
-use point::{X,Y,Z};
+use point::*;
 use shapes::shape::*;
 
 /// A rectangle of given width and height, centered on the
@@ -21,11 +21,11 @@ impl Shape for Rect {
     /// and hits inside the rectangle, return a homogeneous
     /// point representing its xy coordinate.
     fn intersect(&self, ray: &Ray) -> Option<Ray> {
-        let angle = -(*at) * *dirn;
+        let angle = -ray.at() * .dirn;
         if angle < TINY {
             return None;
         };
-        let ray = *dirn * at[Z];
+        let ray = self.dirn * self.at[Z];
         let x = ray[X];
         let y = ray[Y];
         if x < -self.width * 0.5 || x > self.width * 0.5 {
