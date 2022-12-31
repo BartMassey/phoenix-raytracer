@@ -113,8 +113,13 @@ impl Point {
     }
 
     pub fn transform(&mut self, t: &Xform) {
-        let p = t * self;
-        *self = p;
+        let nself = self.len();
+        assert!(nself <= 4);
+        let mut p = [0.0, 0.0, 0.0, 1.0];
+        for (i, v) in self.c.iter().enumerate() {
+            p[i] = *v;
+        }
+        *self = t * &Point::new(p);
     }
 }
 
