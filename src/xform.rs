@@ -1,14 +1,6 @@
-// Copyright © 1991 Bart Massey
-// [This program is licensed under the "3-clause ('new') BSD License"]
-// Please see the file COPYING in the source
-// distribution of this software for license terms.
-
-//! 4x4 transformations. Based very loosely on the
-//! 1991 implementation.
-
 use std::ops::{Mul, MulAssign};
 
-use point::Point;
+use crate::*;
 
 // Convenience type for 4x4 matrices.
 type XFMatrix = [[f64; 4]; 4];
@@ -154,7 +146,7 @@ impl Xform {
     }
 }
 
-impl Mul<Point> for Xform {
+impl Mul<&Point> for Xform {
     type Output = Point;
 
     /// Apply the transformation to the given Point
@@ -171,7 +163,24 @@ impl Mul<Point> for Xform {
     }
 }
 
-impl Mul for Xform {
+impl Mul<&Point> for &Xform {
+    type Output = Point;
+
+    /// Apply the transformation to the given Point
+    /// by matrix-vector multiplication.
+    fn mul(self, rhs: &Point) -> Point {
+        assert!(rhs.len() == 4);
+        let mut t = Point::new([0.0;4]);
+        for r in 0..4 {
+            for c in 0..4 {
+                t[r] += self.m[r][c] * rhs[c];
+            }
+        };
+        t
+    }
+}
+
+impl Mul<&Xform> for Xform {
     type Output = Xform;
 
     /// Compose two transformations by matrix multiplication
@@ -192,7 +201,7 @@ impl Mul for Xform {
     }
 }
 
-impl MulAssign for Xform {
+impl MulAssign<&Xform> for Xform {
     /// Compose the transformation with a given
     /// transformation by matrix multiplication of the
     /// forward transformation matrix and reversed matrix

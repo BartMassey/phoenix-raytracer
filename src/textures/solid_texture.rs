@@ -1,5 +1,6 @@
 use crate::*;
 
+#[derive(Clone)]
 pub struct SolidTexture {
     ka: Color,
     kd: Color,
@@ -16,7 +17,7 @@ impl SolidTexture {
 impl Texture for SolidTexture {
     fn value(
         &self,
-        at: &Point,
+        _at: &Point,
         gc: &Point,
         normal: &Point,
         m: &Model,
@@ -27,33 +28,35 @@ impl Texture for SolidTexture {
 
         let pl = m.the_light.at();
         let pli = m.the_light.i();
-        let pe = m.eye;
+        let pe = m.eye.clone();
         // Unit vector toward the light.
-        let lv = (pl - gc).unit();
+        let lv = (pl - gc.clone()).unit();
 
         // Diffuse term.
-        let fd = lv * normal;
+        let fd = lv.clone() * normal.clone();
         if fd > TINY {
-            result += kd.vproduct(&pli) * fd;
+            result += self.kd.colorize(&pli) * fd;
         }
 
         // Specular Terms.
         // Unit vector from the eye toward the target.
-        let pt = (gc - pe).unit();
+        let pt = (gc.clone() - pe).unit();
         // Specular direction.
-        let ps = pt - normal * ((pt * normal) * 2.0);
+        let ps = pt.clone() - normal.clone() * ((pt * normal.clone()) * 2.0);
 
         // Specular diffusion term.
-        let fs = ps * lv;
+        let fs = ps.clone() * lv;
         if fs > 0.0 {
-            fs = (ns * fs.log()).exp();
+            let fs = (self.ns * fs.ln()).exp();
             if fs > TINY {
-                result += ks.vproduct(&pli) * fs;
+                result += self.ks.colorize(&pli) * fs;
             }
         }
 
         // Ray tracing term.
-        result += ks.vproduct(trace(ray(gc, ps), m, depth).contraction());
+        let ray = Ray::new(gc.clone(), ps);
+        let tr = trace(&ray, m, depth);
+        result += self.ks.colorize(&tr);
 
         result
     }

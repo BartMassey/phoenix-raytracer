@@ -7,7 +7,7 @@ pub struct Poly {
 }
 
 impl Poly {
-    fn new<const N: usize>(points: [Point; N]) -> Self {
+    pub fn new<const N: usize>(points: [Point; N]) -> Self {
         Self {
             p: points.into_iter().collect(),
             dp: 0,
@@ -35,7 +35,7 @@ fn test_side() {
 
 
 impl Poly {
-    fn contains(&self, v: &Point) -> bool {
+    pub fn contains(&self, v: &Point) -> bool {
         // Find the two edges of the convex polygon that
         // surround `v` in the y direction.
         let pn = self.p.len();
@@ -57,8 +57,8 @@ impl Poly {
         }
 
         // What side of each edge is `v` on?
-        let s0 = side(&edges[0][0], &edges[0][1], &v);
-        let s1 = side(&edges[1][0], &edges[1][1], &v);
+        let s0 = side(edges[0][0], edges[0][1], v);
+        let s1 = side(edges[1][0], edges[1][1], v);
 
         // Iff `v` is on opposite sides of each edge,
         // `v` is contained in this polygon.
@@ -67,11 +67,12 @@ impl Poly {
 }
 
 impl Shape for Poly {
-    fn intersect(&self, xform: &Xform, ray: Ray) -> Option<Intersection> {
+    fn intersect(&self, xform: &Xform, ray: &Ray) -> Option<Intersection> {
         // Get the ray in our coordinates.
-        let toi = &xform.mi;
-        r.transform(toi);
-        let Ray { rd, ro } = *ray;
+        let mut ray = ray.clone();
+        let toi = xform.inverse();
+        ray.transform(&toi);
+        let Ray { rd, ro } = ray;
 
         let b = rd[Z];
         if b.abs() < TINY {
@@ -86,10 +87,10 @@ impl Shape for Poly {
         }
 
         let i = ro + rd * t;
-        if self.contains(i) {
+        if self.contains(&i) {
             // Return the hit information.
             Some(Intersection {
-                normal: self.cnormal,
+                normal: self.cnormal.clone(),
                 at: Point::new([i[X], i[Y]]),
                 t,
             })

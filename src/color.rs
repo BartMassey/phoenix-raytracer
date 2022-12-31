@@ -1,11 +1,5 @@
-// Copyright © 1991 Bart Massey
-// [This program is licensed under the "3-clause ('new') BSD License"]
-// Please see the file COPYING in the source
-// distribution of this software for license terms.
-
 //! Implementation of color as a 3-vector of floating-point
 //! RGB values.
-
 
 /// Symbolic representation of red coordinate index of a Color.
 pub const R: usize = 0;
@@ -18,7 +12,7 @@ use std::ops::{Mul, Add, Sub,
                MulAssign, AddAssign, SubAssign,
                Index, IndexMut};
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct Color {
     /// Elements of the Color.
     c: [f64; 3]
@@ -32,6 +26,20 @@ impl Color {
         Color { c: [r, g, b] }
     }
 
+
+    pub fn colorize(&self, c: &Color) -> Self {
+        Self { c: [
+            c.c[R] * self.c[R],
+            c.c[G] * self.c[G],
+            c.c[B] * self.c[B],
+        ]}
+    }
+
+    pub fn apply<T, F>(&self, f: F) -> [T; 3]
+        where F: Fn(f64) -> T
+    {
+        [f(self.c[R]), f(self.c[G]), f(self.c[B])]
+    }
 }
 
 impl Index<usize> for Color {
@@ -57,7 +65,7 @@ impl Mul for Color {
     
     /// Coordinate-wise produce of two Colors.
     fn mul(self, other: Self) -> Self {
-        let mut r = self.clone();
+        let mut r = self;
         for i in 0..self.c.len() {
             r.c[i] *= other.c[i]
         };
@@ -71,7 +79,7 @@ impl Mul<f64> for Color {
     /// Return the coordinate-wise product of an Color and
     /// the given scale using `*` notation.
     fn mul(self, rhs: f64) -> Self {
-        let mut tmp = self.clone();
+        let mut tmp = self;
         tmp *= rhs;
         tmp
     }
@@ -83,7 +91,7 @@ impl Add for Color {
     /// Return the coordinate-wise sum of two Colors using
     /// `+` notation.
     fn add(self, rhs: Self) -> Self {
-        let mut tmp = self.clone();
+        let mut tmp = self;
         tmp += rhs;
         tmp
     }
@@ -95,7 +103,7 @@ impl Sub for Color {
     /// Return the coordinate-wise difference of two Colors
     /// using `-` notation.
     fn sub(self, rhs: Self) -> Self {
-        let mut tmp = self.clone();
+        let mut tmp = self;
         tmp -= rhs;
         tmp
     }

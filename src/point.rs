@@ -7,11 +7,11 @@
 //! floating-point numbers. Based on the 1991
 //! implementation.
 
-use infra::TINY;
-
 use std::ops::{Mul, Neg, Add, Sub,
                MulAssign, AddAssign, SubAssign,
                Index, IndexMut};
+
+use crate::*;
 
 /// Symbolic representation of x coordinate index of a point.
 pub const X: usize = 0;
@@ -25,7 +25,7 @@ pub const W: usize = 3;
 
 /// A Point has dynamic length, which means care
 /// is required in using it.
-#[derive(Clone, Copy)]
+#[derive(Clone, Default)]
 pub struct Point {
     /// Coordinates of the Point.
     pub c: Vec<f64>,
@@ -36,7 +36,7 @@ impl Point {
 
     /// Create a new Point from an array of floats.
     /// (This should probably be a macro.)
-    pub fn new<N: usize>(cs: [f64; N]) -> Self {
+    pub fn new<const N: usize>(cs: [f64; N]) -> Self {
         Point { c : cs.to_vec() }
     }
 
@@ -107,6 +107,15 @@ impl Point {
     pub fn len(&self) -> usize {
         self.c.len()
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    pub fn transform(&mut self, t: &Xform) {
+        let p = t * self;
+        *self = p;
+    }
 }
 
 impl Index<usize> for Point {
@@ -147,7 +156,7 @@ impl Mul<f64> for Point {
     /// Return the coordinate-wise product of a Point and
     /// the given scale using `*` notation.
     fn mul(self, rhs: f64) -> Self {
-        let mut tmp = self.clone();
+        let mut tmp = self;
         tmp *= rhs;
         tmp
     }
@@ -159,7 +168,7 @@ impl Neg for Point {
     /// Return the negation of a Point using unary `-`
     /// notation.
     fn neg(self) -> Self {
-        let mut tmp = self.clone();
+        let mut tmp = self;
         tmp.negate();
         tmp
     }
@@ -172,7 +181,7 @@ impl Add for Point {
     /// Return the coordinate-wise sum of two Points using
     /// `+` notation.
     fn add(self, rhs: Self) -> Self {
-        let mut tmp = self.clone();
+        let mut tmp = self;
         tmp += rhs;
         tmp
     }
@@ -184,7 +193,7 @@ impl Sub for Point {
     /// Return the coordinate-wise difference of two Points
     /// using `-` notation.
     fn sub(self, rhs: Self) -> Self {
-        let mut tmp = self.clone();
+        let mut tmp = self;
         tmp -= rhs;
         tmp
     }
