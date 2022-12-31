@@ -17,7 +17,8 @@ impl PpmRawOutput<File> {
     ) -> Result<Self, std::io::Error> {
         let filename = filename.to_string() + ".ppm";
 
-        let output = std::fs::File::create(filename)?;
+        let mut output = std::fs::File::create(filename)?;
+        write!(output, "P6\n{}\n{}\n{}\n", xsize, ysize, 255)?;
         let output = OutputInfo { xsize, ysize, output };
         Ok(Self { output, curx: 0, cury: 0 })
     }
