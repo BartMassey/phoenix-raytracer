@@ -99,4 +99,15 @@ impl Shape for Poly {
             None
         }
     }
+
+    fn complete(&mut self, xform: &Xform) {
+        let mut o = Point::new([0.0, 0.0, 0.0]);
+        let mut r = Point::new([0.0, 0.0, 1.0]);
+        let toi = xform.inverse();
+        r.transform(&toi);
+        o.transform(&toi);
+        r -= o;
+        r.unitize();
+        self.cnormal = r;
+    }
 }

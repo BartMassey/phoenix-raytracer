@@ -42,12 +42,13 @@ impl Thing {
 
         let mut things = vec![];
 
-        let p = Poly::new([ll, ul, ur, lr]);
+        let mut p = Poly::new([ll, ul, ur, lr]);
         let mut xform = Xform::identity();
         xform *= &Xform::rotation_y(-PI / 2.0);
         xform *= &Xform::scaling(&Point::new([1.0, D / 8.0, D / 8.0]));
         let xboard = Point::new([-joggle(), joggle(), zb + joggle()]);
         xform *= &Xform::translation(&xboard);
+        p.complete(&xform);
         let board = Thing {
             shape: Box::new(p),
             texture: Box::new(tboard),
@@ -55,11 +56,12 @@ impl Thing {
         };
         things.push(board);
 
-        let s = Sphere::default();
+        let mut s = Sphere::default();
         let mut xform = Xform::identity();
         xform *= &Xform::scaling(&Point::new([1.5, 1.5, 1.5]));
         let x = Point::new([1.5 + joggle(), joggle(), zb + joggle()]);
         xform *= &Xform::translation(&x);
+        s.complete(&xform);
         let sgreen = Thing {
             shape: Box::new(s),
             texture: Box::new(tgreen),
@@ -67,9 +69,10 @@ impl Thing {
         };
         things.push(sgreen);
 
-        let s = Sphere::default();
+        let mut s = Sphere::default();
         let x = Point::new([1.0 + joggle(), -D / 3.0 + joggle(), zb - D / 5.0 + joggle()]);
         let xform = Xform::translation(&x);
+        s.complete(&xform);
         let sblue = Thing {
             shape: Box::new(s),
             texture: Box::new(tblue),
@@ -77,9 +80,10 @@ impl Thing {
         };
         things.push(sblue);
 
-        let s = Sphere::default();
+        let mut s = Sphere::default();
         let x = Point::new([1.0 + joggle(), D / 3.0 + joggle(), zb - D / 3.0 + joggle()]);
         let xform = Xform::translation(&x);
+        s.complete(&xform);
         let syellow = Thing {
             shape: Box::new(s),
             texture: Box::new(tyellow),

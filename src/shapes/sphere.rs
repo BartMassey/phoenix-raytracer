@@ -48,4 +48,10 @@ impl Shape for Sphere {
             normal: (i - self.tr.clone()).unit(),
         })
     }
+
+    fn complete(&mut self, xform: &Xform) {
+        let mut o = Point::new([0.0, 0.0, 0.0]);
+        o.transform(&xform.inverse());
+        self.tr = o;
+    }
 }
