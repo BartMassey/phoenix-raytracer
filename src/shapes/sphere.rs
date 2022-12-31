@@ -19,7 +19,7 @@ impl Shape for Sphere {
 
         let a = r.rd.clone().mag2();
         let b = r.ro.clone() * r.rd.clone();
-        let c = r.ro.mag2() - 1.0;
+        let c = r.ro.clone().mag2() - 1.0;
         let d = b * b - a * c;
 
         if d < TINY  {
