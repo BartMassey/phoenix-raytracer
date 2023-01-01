@@ -98,21 +98,13 @@ impl Xform {
     /// Translation transformation by given offset.
     pub fn translation(trans: &Point) -> Self {
         assert!(trans.len() == 3);
-        let mut x = Xform::default();
-        x.m[0][0] = 1.0;
-        x.m[1][1] = 1.0;
-        x.m[2][2] = 1.0;
-        x.m[3][3] = 1.0;
+        let mut x = Xform::identity();
         x.m[0][3] = trans[0];
         x.m[1][3] = trans[1];
         x.m[2][3] = trans[2];
-        x.mi[0][0] = 1.0;
-        x.mi[1][1] = 1.0;
-        x.mi[2][2] = 1.0;
-        x.mi[3][3] = 1.0;
-        x.m[0][3] = -trans[0];
-        x.m[1][3] = -trans[1];
-        x.m[2][3] = -trans[2];
+        x.mi[0][3] = -trans[0];
+        x.mi[1][3] = -trans[1];
+        x.mi[2][3] = -trans[2];
         x
     }
 

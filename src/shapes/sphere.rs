@@ -1,10 +1,15 @@
 use crate::*;
 
 /// A sphere of unit radius at a given position.
-#[derive(Default)]
 pub struct Sphere {
     /// Position of sphere.
     tr: Point,
+}
+
+impl Default for Sphere {
+    fn default() -> Self {
+        Sphere { tr: Point::new([0.0, 0.0, 0.0]) }
+    }
 }
 
 impl Shape for Sphere {
@@ -38,13 +43,13 @@ impl Shape for Sphere {
         }
 
         // Find the intersection point in object coords.
-        let i = r.ro + r.rd * t;
-        let i = toi * &i;
+        let mut i = r.ro + r.rd * t;
+        i.transform(&toi);
 
         // There are many possible mappings -- here's a lame one
         Some(Intersection {
             t,
-            at: i.clone(),
+            at: Point::new([i[X], i[Y]]),
             normal: (i - self.tr.clone()).unit(),
         })
     }
@@ -54,4 +59,24 @@ impl Shape for Sphere {
         o.transform(&xform.inverse());
         self.tr = o;
     }
+}
+
+#[test]
+fn test_sphere_intersect() {
+    let mut s = Sphere::default();
+    let x = Point::new([0.0, 0.0, 3.0]);
+    let xform = Xform::translation(&x);
+    s.complete(&xform);
+
+    let ray = Ray::new(
+        Point::new([0.0, 0.0, 0.0]),
+        Point::new([0.0, 0.0, 1.0]),
+    );
+    assert!(s.intersect(&xform, &ray).is_some());
+
+    let ray = Ray::new(
+        Point::new([0.0, 0.0, 0.0]),
+        Point::new([1.0, 0.0, 1.0]),
+    );
+    assert!(s.intersect(&xform, &ray).is_none());
 }

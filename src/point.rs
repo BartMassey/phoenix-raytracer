@@ -48,7 +48,7 @@ impl Point {
     }
 
     /// Cross product of two Points, which should be
-    /// homogenous. (Operator `*` is dot product.)
+    /// homogenous.
     pub fn cross_product(&self, p: &Self) -> Self {
         assert!(self.c.len() == 3 && p.c.len() == 3 );
         let r = [
@@ -119,7 +119,9 @@ impl Point {
         for (i, v) in self.c.iter().enumerate() {
             p[i] = *v;
         }
-        *self = t * &Point::new(p);
+        let mut x = t * &Point::new(p);
+        x.c.truncate(nself);
+        *self = x;
     }
 }
 
@@ -147,8 +149,10 @@ impl Mul for Point {
     /// Return the dot product of two Points using `*` notation.
     /// The points should be homogenous: the z coordinate is ignored.
     fn mul(self, rhs: Self) -> f64 {
+        let nself = self.c.len();
+        assert_eq!(nself, rhs.c.len());
         let mut r: f64 = 0.0;
-        for i in 0..self.c.len()-1 {
+        for i in 0..nself {
             r += self.c[i] * rhs.c[i];
         };
         r
