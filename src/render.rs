@@ -36,15 +36,17 @@ fn do_joggle(f: fn(f64) -> f64, i: usize, n: usize, t: f64) {
 
 pub fn render(m: &Model, w: usize, h: usize) {
     let hs: f64 = D * A.tan();
-    let mut out = PpmRawOutput::new("render.out", w, h).unwrap();
+    let view_xform = Xform::rotation_y(-A);
 
     for j in (0..h).rev() {
         for i in 0..w {
-            let rt = Point::new([
+            let mut rt = Point::new([
                 2.0 * hs * j as f64 / h as f64 - hs,
+                // XXX Should be ws.
                 2.0 * hs * i as f64 / w as f64 - hs,
                 D,
             ]);
+            rt.transform(&view_xform);
             let r = Ray::new(m.eye.clone(), rt);
             let ave = trace(&r, m, 0);
             out.put_pixel(i, h - j - 1, ave);
