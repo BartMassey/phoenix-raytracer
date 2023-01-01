@@ -9,5 +9,7 @@ fn main() {
     let scene = Thing::generate();
     let m = Model::generate(scene);
 
-    render(&m, x, y);
+    let out = PpmRawOutput::new("render.out", x, y).unwrap();
+
+    render(out, &m, x, y);
 }

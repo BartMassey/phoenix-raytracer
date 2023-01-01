@@ -34,7 +34,7 @@ fn do_joggle(f: fn(f64) -> f64, i: usize, n: usize, t: f64) {
 }
 */
 
-pub fn render(m: &Model, w: usize, h: usize) {
+pub fn render<T: Output>(mut out: T, m: &Model, w: usize, h: usize) {
     let hs: f64 = D * A.tan();
     let view_xform = Xform::rotation_y(-A);
 
