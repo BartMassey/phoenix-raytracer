@@ -27,8 +27,11 @@ pub fn random() -> u64 {
     }
 }
 
+const RES: u64 = 100_000;
+
 /// Produce a pseudo-random floating point number in the
-/// range [0..1].
+/// range [0..1], with the given resolution.
 pub fn frandom() -> f64 {
-    random() as f64 / (!0u64 as f64)
+    let n = random() >> 3;
+    (n % (RES + 1)) as f64 / RES as f64
 }

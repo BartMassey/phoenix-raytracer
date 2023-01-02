@@ -43,8 +43,7 @@ impl Thing {
         let mut things = vec![];
 
         let mut p = Poly::new([ll, ul, ur, lr]);
-        let mut xform = Xform::identity();
-        xform *= &Xform::rotation_y(-PI / 2.0);
+        let mut xform = Xform::rotation_y(-PI / 2.0);
         xform *= &Xform::scaling(&Point::new([1.0, D / 8.0, D / 8.0]));
         let xboard = Point::new([-joggle(), joggle(), zb + joggle()]);
         xform *= &Xform::translation(&xboard);

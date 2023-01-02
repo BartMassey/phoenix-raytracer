@@ -80,7 +80,7 @@ impl Shape for Poly {
             return None;
         }
         
-        let t = ro[Z] / b;
+        let t = -ro[Z] / b;
         if t < TINY {
             // The ray is behind the plane, so no hit.
             return None;
