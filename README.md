@@ -11,11 +11,9 @@ resulting raytracer makes a pretty picture.
 This repo represents my "port" of that raytracer to Rust.
 It's a sort of rebirth from the ashes---hence the name.
 
-This branch is a fairly literal translation, producing
-exactly the same scene as the original when invoked at the
-same resolution. I tried to use best practices in Rust and
-SE when possible, preserving the details otherwise. The
-architecture is similar, and the algorithms are the same.
+This branch improves upon the code of the `classic` branch,
+which was my closest approach to a strict port of the C++
+code.
 
 ## Issues
 
