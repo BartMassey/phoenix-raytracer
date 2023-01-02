@@ -200,15 +200,16 @@ impl MulAssign<&Xform> for Xform {
     /// multiplication of the inverse transformation matrix
     /// using `*=` notation.
     fn mul_assign(&mut self, rhs: &Xform) {
-        let mut t = Xform::default();
+        let tmp = self.clone();
         for i in 0..4 {
             for j in 0..4 {
-                for k in 0..4 {
-                    t.m[i][j] += self.m[i][k] * rhs.m[k][j];
-                    t.mi[i][j] += rhs.mi[i][k] * self.mi[k][j];
+                self.m[i][j] = tmp.m[i][0] * rhs.m[0][j];
+                self.mi[i][j] = tmp.mi[i][0] * rhs.mi[0][j];
+                for k in 1..4 {
+                    self.m[i][j] += tmp.m[i][k] * rhs.m[k][j];
+                    self.mi[i][j] += tmp.mi[i][k] * rhs.mi[k][j];
                 }
             }
         };
-        *self = t;
     }
 }
