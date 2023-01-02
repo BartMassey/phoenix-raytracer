@@ -111,3 +111,29 @@ impl Shape for Poly {
         self.cnormal = r;
     }
 }
+
+#[test]
+fn test_poly_intersect() {
+    let points = [
+        Point::new([-0.5, -0.5]),
+        Point::new([-0.5, 0.5]),
+        Point::new([0.5, 0.5]),
+        Point::new([0.5, -0.5]),
+    ];
+    let mut s = Poly::new(points);
+    let x = Point::new([0.0, 0.0, 3.0]);
+    let xform = Xform::translation(&x);
+    s.complete(&xform);
+
+    let ray = Ray::new(
+        Point::new([0.0, 0.0, 0.0]),
+        Point::new([0.0, 0.0, 1.0]),
+    );
+    assert!(s.intersect(&xform, &ray).is_some());
+
+    let ray = Ray::new(
+        Point::new([0.0, 0.0, 0.0]),
+        Point::new([1.0, 0.0, 1.0]).unit(),
+    );
+    assert!(s.intersect(&xform, &ray).is_none());
+}

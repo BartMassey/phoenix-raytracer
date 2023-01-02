@@ -76,7 +76,7 @@ fn test_sphere_intersect() {
 
     let ray = Ray::new(
         Point::new([0.0, 0.0, 0.0]),
-        Point::new([1.0, 0.0, 1.0]),
+        Point::new([1.0, 0.0, 1.0]).unit(),
     );
     assert!(s.intersect(&xform, &ray).is_none());
 }
