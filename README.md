@@ -1,5 +1,5 @@
 # Phoenix Raytracer
-Copyright (c) 2017 Bart Massey
+Bart Massey 2017—
 
 Long ago (1991) I wrote a raytracer in C++
 <http://github.com/BartMassey/ancient-raytracer> for a
@@ -9,11 +9,13 @@ took 20 years and some help to fully debug, but the
 resulting raytracer makes a pretty picture.
 
 This repo represents my "port" of that raytracer to Rust.
-This isn't a particularly literal translation: I tried to
-use best practices in Rust and SE rather than preserve the
-details. The architecture is similar, and the algorithms are
-the same. (Thus, it's really more like a rebirth from the
-ashes---hence the name.)
+It's a sort of rebirth from the ashes---hence the name.
+
+This branch is a fairly literal translation, producing
+exactly the same scene as the original when invoked at the
+same resolution. I tried to use best practices in Rust and
+SE when possible, preserving the details otherwise. The
+architecture is similar, and the algorithms are the same.
 
 ## Issues
 
@@ -21,6 +23,24 @@ ashes---hence the name.)
   thread-safe PRNG operation, and I didn't need a
   particularly good generator. So I used a 64-bit LCG with
   unsafe global state.
+
+* This is a pretty inefficient port of a pretty gross
+  original. It could use a ton of cleanup of grossness
+  inherited from `ancient-raytracer` and a ton of
+  "carcinization" to be more efficient and readable.
+
+  The core algorithm is stupidly inefficient, checking
+  intersection against every object in the scene for every
+  raycast. Something as simple as octtrees, or better yet
+  some kind of adaptive space partitioning, might really
+  speed things up a lot.
+
+* Since `ancient-raytracer` used no external code, I chose
+  to do the same in this branch. Everything here, including
+  PPM output, is local code. This is a shame for modern
+  Rust, and things should be replaced with better crates
+  when appropriate: notably the vector and matrix processing
+  and the graphic output.
 
 ## License
 
