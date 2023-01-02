@@ -39,15 +39,15 @@ impl Xform {
         let sa = angle.sin();
         let mut x = Xform::default();
         x.m[0][0] = 1.0;
+        x.m[3][3] = 1.0;
         x.m[1][1] = ca;
         x.m[2][2] = ca;
-        x.m[3][3] = 1.0;
         x.m[1][2] = -sa;
         x.m[2][1] = sa;
         x.mi[0][0] = 1.0;
+        x.mi[3][3] = 1.0;
         x.mi[1][1] = ca;
         x.mi[2][2] = ca;
-        x.mi[3][3] = 1.0;
         x.mi[1][2] = sa;
         x.mi[2][1] = -sa;
         x
@@ -59,18 +59,18 @@ impl Xform {
         let ca = angle.cos();
         let sa = angle.sin();
         let mut x = Xform::default();
-        x.m[0][0] = ca;
         x.m[1][1] = 1.0;
-        x.m[2][2] = ca;
         x.m[3][3] = 1.0;
-        x.m[0][2] = sa;
+        x.m[0][0] = ca;
+        x.m[2][2] = ca;
         x.m[2][0] = -sa;
-        x.mi[0][0] = ca;
+        x.m[0][2] = sa;
         x.mi[1][1] = 1.0;
-        x.mi[2][2] = ca;
         x.mi[3][3] = 1.0;
-        x.mi[0][2] = -sa;
+        x.mi[0][0] = ca;
+        x.mi[2][2] = ca;
         x.mi[2][0] = sa;
+        x.mi[0][2] = -sa;
         x
     }
 
@@ -80,16 +80,16 @@ impl Xform {
         let ca = angle.cos();
         let sa = angle.sin();
         let mut x = Xform::default();
-        x.m[0][0] = ca;
-        x.m[1][1] = ca;
         x.m[2][2] = 1.0;
         x.m[3][3] = 1.0;
+        x.m[0][0] = ca;
+        x.m[1][1] = ca;
         x.m[0][1] = -sa;
         x.m[1][0] = sa;
-        x.mi[0][0] = ca;
-        x.mi[1][1] = ca;
         x.mi[2][2] = 1.0;
         x.mi[3][3] = 1.0;
+        x.mi[0][0] = ca;
+        x.mi[1][1] = ca;
         x.mi[0][1] = sa;
         x.mi[1][0] = -sa;
         x
