@@ -35,15 +35,16 @@ fn do_joggle(f: fn(f64) -> f64, i: usize, n: usize, t: f64) {
 */
 
 pub fn render<T: Output>(mut out: T, m: &Model, w: usize, h: usize) {
-    let hs: f64 = D * A.tan();
+    // Pick a uniform scale factor based on eyepoint distance
+    // and aspect ratio.
+    let scale: f64 = D * A.tan() / w.max(h) as f64;
     let view_xform = Xform::rotation_y(-A);
 
     for j in (0..h).rev() {
         for i in 0..w {
             let mut rt = Point::new([
-                2.0 * hs * j as f64 / h as f64 - hs,
-                // XXX Should be ws.
-                2.0 * hs * i as f64 / w as f64 - hs,
+                scale * (2.0 * j as f64 - w as f64),
+                scale * (2.0 * i as f64 - h as f64),
                 D,
             ]);
             rt.transform(&view_xform);
