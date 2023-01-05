@@ -33,12 +33,17 @@ code.
   some kind of adaptive space partitioning, might really
   speed things up a lot.
 
-* Since `ancient-raytracer` used no external code, I chose
-  to do the same in this branch. Everything here, including
-  PPM output, is local code. This is a shame for modern
-  Rust, and things should be replaced with better crates
-  when appropriate: notably the vector and matrix processing
-  and the graphic output.
+* `ancient-raytracer` used no external code, and the
+  `classic` branch does the same.
+
+  This branch uses external crates where appropriate:
+
+  * `clap` for argument parsing
+  * `rayon` for parallelism
+
+  Other things should be replaced with external crates,
+  notably the vector and matrix processing and the graphic
+  output.
 
 ## License
 

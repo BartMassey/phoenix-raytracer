@@ -1,6 +1,6 @@
 [package]
 name = "rt"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Bart Massey <bart@cs.pdx.edu>"]
 publish = false
 description = "Raytracer in Rust."
@@ -9,6 +9,9 @@ readme = "README.md"
 license-file = "COPYING"
 edition = "2021"
 
+[dependencies.clap]
+version = "4.0.32"
+features = ["derive", "wrap_help"]
+
 [dependencies]
-clap = { version = "4.0.32", features = ["derive", "wrap_help"] }
 rayon = "1.6.1"
