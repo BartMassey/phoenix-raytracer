@@ -1,3 +1,5 @@
+use rayon::prelude::*;
+
 use crate::*;
 
 pub fn trace(r: &Ray, m: &Model, depth: usize) -> Color {
@@ -34,24 +36,45 @@ fn do_joggle(f: fn(f64) -> f64, i: usize, n: usize, t: f64) {
 }
 */
 
-pub fn render<T: Output>(mut out: T, m: &Model, w: usize, h: usize) {
+pub fn render<T>(mut out: T, m: &Model, w: usize, h: usize, sequential: bool)
+    where T: Output
+{
     // Pick a uniform scale factor based on eyepoint distance
     // and aspect ratio.
     let scale: f64 = D * A.tan() / w.max(h) as f64;
     let view_xform = Xform::rotation_y(-A);
 
-    for j in (0..h).rev() {
-        for i in 0..w {
-            let mut rt = Point::new([
-                scale * (2.0 * j as f64 - w as f64),
-                scale * (2.0 * i as f64 - h as f64),
-                D,
-            ]);
-            rt.transform(&view_xform);
-            let r = Ray::new(m.eye.clone(), rt);
-            let ave = trace(&r, m, 0);
-            out.put_pixel(i, h - j - 1, ave);
+    let trace_one = |j, i| {
+        let mut rt = Point::new([
+            scale * (2.0 * j as f64 - w as f64),
+            scale * (2.0 * i as f64 - h as f64),
+            D,
+        ]);
+        rt.transform(&view_xform);
+        let r = Ray::new(m.eye.clone(), rt);
+        trace(&r, m, 0)
+    };
+
+    if sequential {
+        for j in (0..h).rev() {
+            for i in 0..w {
+                let ave = trace_one(j, i);
+                out.put_pixel(i, h - j - 1, ave);
+            }
+            out.flush_row();
         }
-        out.flush_row();
+    } else {
+        let pixels: Vec<Vec<Color>> = (0..h).into_par_iter().rev().map(|j| {
+            (0..w).into_par_iter().map(|i| {
+                trace_one(j, i)
+            }).collect()
+        }).collect();
+
+        for (j, row) in pixels.into_iter().enumerate() {
+            for (i, ave) in row.into_iter().enumerate() {
+                out.put_pixel(i, j, ave);
+            }
+            out.flush_row();
+        }
     }
 }

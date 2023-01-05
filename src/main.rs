@@ -9,10 +9,12 @@ use clap::Parser;
 struct Args {
     #[arg(short, default_value="render.out.ppm")]
     outfile: PathBuf,
+    #[arg(short, long)]
+    sequential: bool,
     #[arg(required(true))]
-    x: usize,
+    width: usize,
     #[arg(required(true))]
-    y: usize,
+    height: usize,
 }
 
 fn main() {
@@ -21,7 +23,7 @@ fn main() {
     let scene = Thing::generate();
     let m = Model::generate(scene);
 
-    let out = PpmRawOutput::new(&args.outfile, args.x, args.y).unwrap();
+    let out = PpmRawOutput::new(&args.outfile, args.width, args.height).unwrap();
 
-    render(out, &m, args.x, args.y);
+    render(out, &m, args.width, args.height, args.sequential);
 }

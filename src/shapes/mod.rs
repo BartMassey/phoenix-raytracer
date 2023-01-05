@@ -12,7 +12,7 @@ pub struct Intersection {
   pub at: Point,
 }
 
-pub trait Shape {
+pub trait Shape: Send + Sync {
     /// Given a ray specified by origin and unit direction,
     /// return the location and unit direction of intersection
     /// in texture coordinates, if intersection happens.
