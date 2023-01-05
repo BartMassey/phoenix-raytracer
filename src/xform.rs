@@ -11,13 +11,12 @@ type XFMatrix = [[f64; 4]; 4];
 #[derive(Clone, Default)]
 pub struct Xform {
     /// Forward transformation matrix.
-    pub m: XFMatrix,  
+    pub m: XFMatrix,
     /// Inverse transformation matrix.
-    pub mi: XFMatrix
+    pub mi: XFMatrix,
 }
 
 impl Xform {
-
     /// Identity transformation.
     pub fn identity() -> Self {
         let mut x = Xform::default();
@@ -27,8 +26,8 @@ impl Xform {
                     x.m[r][c] = 1.0;
                     x.mi[r][c] = 1.0;
                 };
-            };
-        };
+            }
+        }
         x
     }
 
@@ -145,12 +144,12 @@ impl Mul<&Point> for Xform {
     /// by matrix-vector multiplication.
     fn mul(self, rhs: &Point) -> Point {
         assert!(rhs.len() == 4);
-        let mut t = Point::new([0.0;4]);
+        let mut t = Point::new([0.0; 4]);
         for r in 0..4 {
             for c in 0..4 {
                 t[r] += self.m[r][c] * rhs[c];
             }
-        };
+        }
         t
     }
 }
@@ -162,12 +161,12 @@ impl Mul<&Point> for &Xform {
     /// by matrix-vector multiplication.
     fn mul(self, rhs: &Point) -> Point {
         assert!(rhs.len() == 4);
-        let mut t = Point::new([0.0;4]);
+        let mut t = Point::new([0.0; 4]);
         for r in 0..4 {
             for c in 0..4 {
                 t[r] += self.m[r][c] * rhs[c];
             }
-        };
+        }
         t
     }
 }
@@ -188,7 +187,7 @@ impl Mul<&Xform> for Xform {
                     t.mi[i][j] += rhs.mi[i][k] * self.mi[k][j];
                 }
             }
-        };
+        }
         t
     }
 }
@@ -210,6 +209,6 @@ impl MulAssign<&Xform> for Xform {
                     self.mi[i][j] += tmp.mi[i][k] * rhs.mi[k][j];
                 }
             }
-        };
+        }
     }
 }

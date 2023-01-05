@@ -7,9 +7,9 @@ pub use poly::*;
 use crate::*;
 
 pub struct Intersection {
-  pub t: f64,
-  pub normal: Point,
-  pub at: Point,
+    pub t: f64,
+    pub normal: Point,
+    pub at: Point,
 }
 
 pub trait Shape: Send + Sync {

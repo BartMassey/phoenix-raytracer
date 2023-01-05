@@ -7,11 +7,10 @@ pub fn trace(r: &Ray, m: &Model, depth: usize) -> Color {
         return m.bg;
     }
 
-    let first_intersection = m.scene
+    let first_intersection = m
+        .scene
         .iter()
-        .filter_map(|p| {
-            p.shape.intersect(&p.xform, r).map(|i| (i, p))
-        })
+        .filter_map(|p| p.shape.intersect(&p.xform, r).map(|i| (i, p)))
         .min_by(|x1, x2| x1.0.t.partial_cmp(&x2.0.t).unwrap());
 
     match first_intersection {
@@ -19,9 +18,7 @@ pub fn trace(r: &Ray, m: &Model, depth: usize) -> Color {
             let nr = r.at(i.t);
             p.texture.value(&i.at, &nr, &i.normal, m, depth + 1)
         }
-        None => {
-            m.bg
-        }
+        None => m.bg,
     }
 }
 
@@ -37,7 +34,8 @@ fn do_joggle(f: fn(f64) -> f64, i: usize, n: usize, t: f64) {
 */
 
 pub fn render<T>(mut out: T, m: &Model, w: usize, h: usize, sequential: bool)
-    where T: Output
+where
+    T: Output,
 {
     // Pick a uniform scale factor based on eyepoint distance
     // and aspect ratio.
@@ -64,11 +62,11 @@ pub fn render<T>(mut out: T, m: &Model, w: usize, h: usize, sequential: bool)
             out.flush_row();
         }
     } else {
-        let pixels: Vec<Vec<Color>> = (0..h).into_par_iter().rev().map(|j| {
-            (0..w).into_par_iter().map(|i| {
-                trace_one(j, i)
-            }).collect()
-        }).collect();
+        let pixels: Vec<Vec<Color>> = (0..h)
+            .into_par_iter()
+            .rev()
+            .map(|j| (0..w).into_par_iter().map(|i| trace_one(j, i)).collect())
+            .collect();
 
         for (j, row) in pixels.into_iter().enumerate() {
             for (i, ave) in row.into_iter().enumerate() {

@@ -15,14 +15,7 @@ impl SolidTexture {
 }
 
 impl Texture for SolidTexture {
-    fn value(
-        &self,
-        _at: &Point,
-        gc: &Point,
-        normal: &Point,
-        m: &Model,
-        depth: usize
-    ) -> Color {
+    fn value(&self, _at: &Point, gc: &Point, normal: &Point, m: &Model, depth: usize) -> Color {
         // Start with ambient term.
         let mut result = self.ka;
 

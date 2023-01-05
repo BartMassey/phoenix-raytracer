@@ -33,7 +33,6 @@ fn test_side() {
     assert_eq!(1.0, side(&origin, &v1, &y));
 }
 
-
 impl Poly {
     pub fn contains(&self, v: &Point) -> bool {
         // Find the two edges of the convex polygon that
@@ -79,7 +78,7 @@ impl Shape for Poly {
             // The ray is parallel to the plane, so no hit.
             return None;
         }
-        
+
         let t = -ro[Z] / b;
         if t < TINY {
             // The ray is behind the plane, so no hit.
@@ -125,10 +124,7 @@ fn test_poly_intersect() {
     let xform = Xform::translation(&x);
     s.complete(&xform);
 
-    let ray = Ray::new(
-        Point::new([0.0, 0.0, 0.0]),
-        Point::new([0.0, 0.0, 1.0]),
-    );
+    let ray = Ray::new(Point::new([0.0, 0.0, 0.0]), Point::new([0.0, 0.0, 1.0]));
     assert!(s.intersect(&xform, &ray).is_some());
 
     let ray = Ray::new(

@@ -2,7 +2,7 @@
 // [This program is licensed under the "3-clause ('new') BSD License"]
 // Please see the file COPYING in the source
 // distribution of this software for license terms.
-    
+
 //! Terrible LCG PRNG because Rust and global state.
 //! http://nuclear.llnl.gov/CNP/rng/rngman/node4.html
 

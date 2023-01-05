@@ -8,10 +8,7 @@ pub struct Ray {
 
 impl Ray {
     pub fn new(ro: Point, rd: Point) -> Self {
-        let mut result = Self {
-            ro,
-            rd,
-        };
+        let mut result = Self { ro, rd };
         result.rd.unitize();
         result
     }

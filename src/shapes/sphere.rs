@@ -8,7 +8,9 @@ pub struct Sphere {
 
 impl Default for Sphere {
     fn default() -> Self {
-        Sphere { tr: Point::new([0.0, 0.0, 0.0]) }
+        Sphere {
+            tr: Point::new([0.0, 0.0, 0.0]),
+        }
     }
 }
 
@@ -27,12 +29,12 @@ impl Shape for Sphere {
         let c = r.ro.clone().mag2() - 1.0;
         let d = b * b - a * c;
 
-        if d < TINY  {
+        if d < TINY {
             // The ray misses the sphere, so no hit.
             return None;
         }
 
-        let t = if a < 0.0  {
+        let t = if a < 0.0 {
             (-b + d.sqrt()) / a
         } else {
             (-b - d.sqrt()) / a
@@ -68,10 +70,7 @@ fn test_sphere_intersect() {
     let xform = Xform::translation(&x);
     s.complete(&xform);
 
-    let ray = Ray::new(
-        Point::new([0.0, 0.0, 0.0]),
-        Point::new([0.0, 0.0, 1.0]),
-    );
+    let ray = Ray::new(Point::new([0.0, 0.0, 0.0]), Point::new([0.0, 0.0, 1.0]));
     assert!(s.intersect(&xform, &ray).is_some());
 
     let ray = Ray::new(

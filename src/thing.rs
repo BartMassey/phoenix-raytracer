@@ -35,10 +35,7 @@ impl Thing {
         let tgreen = SolidTexture::new(kblack, kgreen * 0.2, kgreen * 0.75, 100.0);
         let tblue = SolidTexture::new(kblack, kblue * 0.2, kblue * 0.75, 100.0);
         let tyellow = SolidTexture::new(kblack, kyellow * 0.85, kwhite * 0.05, 10.0);
-        let tboard = BoardTexture::new(
-            Box::new(tyellow.clone()),
-            Box::new(tblue.clone()),
-        );
+        let tboard = BoardTexture::new(Box::new(tyellow.clone()), Box::new(tblue.clone()));
 
         let mut things = vec![];
 

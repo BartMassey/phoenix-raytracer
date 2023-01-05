@@ -8,7 +8,9 @@ pub const TINY: f64 = 0.00001;
 
 /// Degrees to radians.
 macro_rules! dtor {
-    ($deg:literal) => { PI * $deg / 180.0 };
+    ($deg:literal) => {
+        PI * $deg / 180.0
+    };
 }
 
 /// Scene viewing angle. XXX This is hardcoded for now.

@@ -1,5 +1,5 @@
-pub use std::io::Write;
 pub use std::fs::File;
+pub use std::io::Write;
 use std::path::Path;
 
 use crate::*;
@@ -18,8 +18,16 @@ impl PpmRawOutput<File> {
     ) -> Result<Self, std::io::Error> {
         let mut output = std::fs::File::create(filename)?;
         write!(output, "P6\n{}\n{}\n{}\n", xsize, ysize, 255)?;
-        let output = OutputInfo { xsize, ysize, output };
-        Ok(Self { output, curx: 0, cury: 0 })
+        let output = OutputInfo {
+            xsize,
+            ysize,
+            output,
+        };
+        Ok(Self {
+            output,
+            curx: 0,
+            cury: 0,
+        })
     }
 }
 

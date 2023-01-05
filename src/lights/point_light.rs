@@ -8,7 +8,6 @@ pub struct PointLight {
     pub intensity: Color,
 }
 
-
 impl Light for PointLight {
     fn at(&self) -> Point {
         self.loc.clone()

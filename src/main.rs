@@ -7,7 +7,7 @@ use clap::Parser;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    #[arg(short, default_value="render.out.ppm")]
+    #[arg(short, default_value = "render.out.ppm")]
     outfile: PathBuf,
     #[arg(short, long)]
     sequential: bool,

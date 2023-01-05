@@ -11,12 +11,5 @@ pub trait Texture: Send + Sync {
     /// a unit vector pointing in the direction of intersection and
     /// an indication of how much recursion depth remains, return
     /// the color of the resulting ray.
-    fn value(
-        &self,
-        at: &Point,
-        gc: &Point,
-        normal: &Point,
-        m: &Model,
-        depth: usize
-    ) -> Color;
+    fn value(&self, at: &Point, gc: &Point, normal: &Point, m: &Model, depth: usize) -> Color;
 }
