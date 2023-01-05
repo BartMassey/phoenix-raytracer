@@ -8,3 +8,6 @@ repository = "http://github.com/BartMassey/phoenix-raytracer"
 readme = "README.md"
 license-file = "COPYING"
 edition = "2021"
+
+[dependencies]
+clap = { version = "4.0.32", features = ["derive", "wrap_help"] }

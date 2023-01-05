@@ -1,5 +1,6 @@
 pub use std::io::Write;
 pub use std::fs::File;
+use std::path::Path;
 
 use crate::*;
 
@@ -10,13 +11,11 @@ pub struct PpmRawOutput<T: Write> {
 }
 
 impl PpmRawOutput<File> {
-    pub fn new(
-        filename: &str,
+    pub fn new<P: AsRef<Path>>(
+        filename: P,
         xsize: usize,
         ysize: usize,
     ) -> Result<Self, std::io::Error> {
-        let filename = filename.to_string() + ".ppm";
-
         let mut output = std::fs::File::create(filename)?;
         write!(output, "P6\n{}\n{}\n{}\n", xsize, ysize, 255)?;
         let output = OutputInfo { xsize, ysize, output };
