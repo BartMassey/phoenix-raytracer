@@ -12,18 +12,15 @@ use std::sync::atomic::{AtomicU64, Ordering::SeqCst};
 /// the presence of contention.
 pub fn random() -> u64 {
     static STATE: AtomicU64 = AtomicU64::new(0x123456789abcdef0u64);
+    let mut current = STATE.load(SeqCst);
     loop {
-        let current = STATE
-            .load(SeqCst);
         let new = current
             .wrapping_mul(2862933555777941757u64)
             .wrapping_add(3037000493u64);
-        loop {
-            if STATE.compare_exchange(current, new, SeqCst, SeqCst).is_ok() {
-                return new;
-            }
+        match STATE.compare_exchange(current, new, SeqCst, SeqCst) {
+            Ok(new) => return new,
+            Err(changed) => current = changed,
         }
-
     }
 }
 
