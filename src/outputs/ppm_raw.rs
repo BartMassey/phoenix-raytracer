@@ -1,5 +1,5 @@
 pub use std::fs::File;
-pub use std::io::Write;
+pub use std::io::{BufWriter, Write};
 use std::path::Path;
 
 use crate::*;
@@ -10,13 +10,14 @@ pub struct PpmRawOutput<T: Write> {
     cury: usize,
 }
 
-impl PpmRawOutput<File> {
+impl PpmRawOutput<BufWriter<File>> {
     pub fn new<P: AsRef<Path>>(
         filename: P,
         xsize: usize,
         ysize: usize,
     ) -> Result<Self, std::io::Error> {
-        let mut output = std::fs::File::create(filename)?;
+        let output = File::create(filename)?;
+        let mut output = BufWriter::with_capacity(3 * 4 * xsize, output);
         write!(output, "P6\n{}\n{}\n{}\n", xsize, ysize, 255)?;
         let output = OutputInfo {
             xsize,
