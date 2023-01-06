@@ -22,24 +22,29 @@ pub fn trace(r: &Ray, m: &Model, depth: usize) -> Color {
     }
 }
 
-/*
-#[cfg(feature = "antialias")]
-fn do_joggle(f: fn(f64) -> f64, i: usize, n: usize, t: f64) {
+fn do_joggle(f: fn(f64) -> f64, i: usize, n: usize, t: f64) -> f64 {
     let mut a = i as f64 / n as f64 + t;
     while a > 0.5 {
         a -= 1.0;
     }
     0.5 * f(PI * a)
 }
-*/
 
-pub fn render<T>(mut out: T, m: &Model, w: usize, h: usize, sequential: bool)
+pub fn render<T>(
+    mut out: T,
+    m: &Model,
+    w: usize,
+    h: usize,
+    sequential: bool,
+    antialias: Option<usize>,
+)
 where
     T: Output,
 {
     // Pick a uniform scale factor based on eyepoint distance
     // and aspect ratio.
-    let scale: f64 = D * A.tan() / w.max(h) as f64;
+    let hs = D * A.tan();
+    let scale: f64 = hs / w.max(h) as f64;
     let view_xform = Xform::rotation_y(-A);
 
     let trace_one = |j, i| {
@@ -48,9 +53,29 @@ where
             scale * (2.0 * i as f64 - h as f64),
             D,
         ]);
-        rt.transform(&view_xform);
-        let r = Ray::new(m.eye.clone(), rt);
-        trace(&r, m, 0)
+        match antialias {
+            None => {
+                rt.transform(&view_xform);
+                let r = Ray::new(m.eye.clone(), rt);
+                trace(&r, m, 0)
+            }
+            Some(aa) => {
+                let mut ave = Color::new(0.0, 0.0, 0.0);
+                for k in 0..aa {
+                    let joggle = frandom();
+                    let mut rt = Point::new([
+                        2.0 * hs * (j as f64 + do_joggle(f64::cos, k, aa, joggle)) / h as f64 - hs,
+                        2.0 * hs * (i as f64 + do_joggle(f64::sin, k, aa, joggle)) / w as f64 - hs,
+                        D,
+                    ]);
+                    rt.transform(&view_xform);
+                    let r = Ray::new(m.eye.clone(), rt);
+                    ave += trace(&r, m, 0);
+                }
+                ave *= 1.0 / aa as f64;
+                ave
+            }
+        }
     };
 
     if sequential {

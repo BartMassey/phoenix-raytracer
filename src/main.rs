@@ -11,6 +11,8 @@ struct Args {
     outfile: PathBuf,
     #[arg(short, long)]
     sequential: bool,
+    #[arg(short, long)]
+    antialias: Option<usize>,
     #[arg(required(true))]
     width: usize,
     #[arg(required(true))]
@@ -25,5 +27,5 @@ fn main() {
 
     let out = PpmRawOutput::new(&args.outfile, args.width, args.height).unwrap();
 
-    render(out, &m, args.width, args.height, args.sequential);
+    render(out, &m, args.width, args.height, args.sequential, args.antialias);
 }
