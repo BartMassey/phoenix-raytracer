@@ -62,10 +62,9 @@ where
             Some(aa) => {
                 let mut ave = Color::new(0.0, 0.0, 0.0);
                 for k in 0..aa {
-                    let joggle = frandom();
                     let mut rt = Point::new([
-                        2.0 * hs * (j as f64 + do_joggle(f64::cos, k, aa, joggle)) / h as f64 - hs,
-                        2.0 * hs * (i as f64 + do_joggle(f64::sin, k, aa, joggle)) / w as f64 - hs,
+                        2.0 * hs * (j as f64 + do_joggle(f64::cos, k, aa, frandom())) / h as f64 - hs,
+                        2.0 * hs * (i as f64 + do_joggle(f64::sin, k, aa, frandom())) / w as f64 - hs,
                         D,
                     ]);
                     rt.transform(&view_xform);
