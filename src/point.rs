@@ -108,7 +108,8 @@ impl Point {
             self.0.resize_vertically_mut(4, 0.0);
             self.0[3] = 1.0;
         }
-        let x = t * self;
+        let mut x = t * self;
+        x.0.resize_vertically_mut(nself, 0.0);
         *self = x;
     }
 
@@ -140,15 +141,10 @@ impl Mul for &Point {
     type Output = f64;
 
     /// Return the dot product of two Points using `*` notation.
-    /// The points should be homogenous: the w coordinate is ignored.
+    /// The points should be homogenous.
     fn mul(self, rhs: Self) -> f64 {
-        assert_eq!(4, self.len());
-        assert_eq!(4, rhs.len());
-        let mut lhs = self.0.clone();
-        lhs.resize_vertically_mut(3, 0.0);
-        let mut rhs = rhs.0.clone();
-        rhs.resize_vertically_mut(3, 0.0);
-        lhs.dot(&rhs)
+        assert_eq!(self.len(), rhs.len());
+        self.0.dot(&rhs.0)
     }
 }
 
