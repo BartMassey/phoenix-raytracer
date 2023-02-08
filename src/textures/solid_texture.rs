@@ -26,7 +26,7 @@ impl Texture for SolidTexture {
         let lv = (pl - gc.clone()).unit();
 
         // Diffuse term.
-        let fd = lv.clone() * normal.clone();
+        let fd = &lv * normal;
         if fd > TINY {
             result += self.kd.colorize(&pli) * fd;
         }
@@ -35,10 +35,10 @@ impl Texture for SolidTexture {
         // Unit vector from the eye toward the target.
         let pt = (gc.clone() - pe).unit();
         // Specular direction.
-        let ps = pt.clone() - normal.clone() * ((pt * normal.clone()) * 2.0);
+        let ps = pt.clone() - normal * ((&pt * normal) * 2.0);
 
         // Specular diffusion term.
-        let fs = ps.clone() * lv;
+        let fs = &ps * &lv;
         if fs > 0.0 {
             let fs = (self.ns * fs.ln()).exp();
             if fs > TINY {

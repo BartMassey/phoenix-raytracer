@@ -14,4 +14,5 @@ version = "4.0.32"
 features = ["derive", "wrap_help"]
 
 [dependencies]
+nalgebra = "0.32.1"
 rayon = "1.6.1"

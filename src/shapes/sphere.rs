@@ -24,9 +24,9 @@ impl Shape for Sphere {
         let toi = xform.inverse();
         r.transform(&toi);
 
-        let a = r.rd.clone().mag2();
-        let b = r.ro.clone() * r.rd.clone();
-        let c = r.ro.clone().mag2() - 1.0;
+        let a = r.rd.mag2();
+        let b = &r.ro * &r.rd;
+        let c = r.ro.mag2() - 1.0;
         let d = b * b - a * c;
 
         if d < TINY {
@@ -45,13 +45,14 @@ impl Shape for Sphere {
         }
 
         // Find the intersection point in object coords.
-        let mut i = r.ro + r.rd * t;
+        let tx = &r.rd * t;
+        let mut i = r.ro + tx;
         i.transform(&toi);
 
         // There are many possible mappings -- here's a lame one
         Some(Intersection {
             t,
-            at: Point::new([i[X], i[Y]]),
+            at: Point::new([i.x(), i.y()]),
             normal: (i - self.tr.clone()).unit(),
         })
     }

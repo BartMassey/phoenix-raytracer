@@ -1,13 +1,15 @@
 //! Library for raytracing. This contains most of the
 //! functionality of a raytracer.
 
+pub mod point;
+pub use point::*;
+
 pub mod color;
 pub mod frandom;
 pub mod infra;
 pub mod lights;
 pub mod model;
 pub mod outputs;
-pub mod point;
 pub mod ray;
 pub mod render;
 pub mod shapes;
@@ -21,7 +23,6 @@ pub use infra::*;
 pub use lights::*;
 pub use model::*;
 pub use outputs::*;
-pub use point::*;
 pub use ray::*;
 pub use render::*;
 pub use shapes::*;

@@ -16,8 +16,8 @@ impl BoardTexture {
 
 impl Texture for BoardTexture {
     fn value(&self, at: &Point, gc: &Point, normal: &Point, m: &Model, depth: usize) -> Color {
-        let x: isize = at[X].floor() as isize;
-        let y: isize = at[Y].floor() as isize;
+        let x: isize = at.x().floor() as isize;
+        let y: isize = at.y().floor() as isize;
         let texture = if (x & 1) ^ (y & 1) == 1 {
             &self.red_texture
         } else {

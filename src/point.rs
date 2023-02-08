@@ -7,64 +7,64 @@
 //! floating-point numbers. Based on the 1991
 //! implementation.
 
-use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::ops::*;
 
 use crate::*;
 
-/// Symbolic representation of x coordinate index of a point.
-pub const X: usize = 0;
-/// Symbolic representation of y coordinate index of a point.
-pub const Y: usize = 1;
-/// Symbolic representation of z coordinate index of a point.
-pub const Z: usize = 2;
-/// Symbolic representation of w coordinate index of a
-/// 4-coordinate point.  (Homogeneous coordinate.)
-pub const W: usize = 3;
-
 /// A Point has dynamic length, which means care
 /// is required in using it.
-#[derive(Clone, Default)]
-pub struct Point {
-    /// Coordinates of the Point.
-    pub c: Vec<f64>,
+#[derive(Clone)]
+pub struct Point(nalgebra::DVector<f64>);
+
+macro_rules! coord {
+    ($id:ident, $idx:literal) => {
+        pub fn $id(&self) -> f64 {
+            *self.get($idx)
+        }
+    };
 }
 
 /// Operations on Points.
 impl Point {
     /// Create a new Point from an array of floats.
-    /// (This should probably be a macro.)
     pub fn new<const N: usize>(cs: [f64; N]) -> Self {
-        Point { c: cs.to_vec() }
+        Point(nalgebra::DVector::from_row_slice(&cs))
+    }
+
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.len() == 0
+    }
+
+    pub fn get(&self, i: usize) -> &f64 {
+        &self.0[i]
+    }
+
+    pub fn get_mut(&mut self, i: usize) -> &mut f64 {
+        &mut self.0[i]
     }
 
     /// Convert the Point to its coordinate-wise negation.
     pub fn negate(&mut self) {
-        for i in 0..self.c.len() {
-            self.c[i] = -self.c[i];
-        }
+        let p = Point(-self.0.clone());
+        *self = p;
     }
 
-    /// Cross product of two Points, which should be
-    /// homogenous.
-    pub fn cross_product(&self, p: &Self) -> Self {
-        assert!(self.c.len() == 3 && p.c.len() == 3);
-        let r = [
-            self.c[1] * p.c[2] - self.c[2] * p.c[1],
-            self.c[2] * p.c[0] - self.c[0] * p.c[2],
-            self.c[0] * p.c[1] - self.c[1] * p.c[0],
-            1.0,
-        ];
-        Point::new(r)
+    /// Cross product of two Points, which should be dim 3.
+    pub fn cross_product(&self, rhs: &Self) -> Self {
+        assert!(self.len() == 3);
+        assert!(rhs.len() == 3);
+        let mut p = self.0.cross(&rhs.0);
+        p.resize_vertically_mut(4, 1.0);
+        Point(p)
     }
 
     /// Square of Euclidean magnitude of a Point.
     pub fn mag2(&self) -> f64 {
-        let mut r = 0.0;
-        for i in 0..self.c.len() {
-            let c = self.c[i];
-            r += c * c;
-        }
-        r
+        self.0.dot(&self.0)
     }
 
     /// Euclidean magnitude of a Point.
@@ -76,7 +76,7 @@ impl Point {
     pub fn unitize(&mut self) {
         let m = self.mag();
         assert!(m > TINY);
-        *self *= 1.0 / m;
+        self.0 /= m;
     }
 
     /// Return the unit (direction) vector of a Point.
@@ -89,8 +89,8 @@ impl Point {
     /// Convert the 4-coordinate Point to a homogenous
     /// representation. (Scale so that final coordinate is 1.)
     pub fn homogenize(&mut self) {
-        assert!(self.c.len() == 4);
-        *self *= 1.0 / self.c[3];
+        assert!(self.len() == 4);
+        self.0 /= self.w();
     }
 
     /// Homogenous representation of a 4-coordinate
@@ -101,26 +101,21 @@ impl Point {
         r
     }
 
-    /// Return the number of coordinates of the Point.
-    pub fn len(&self) -> usize {
-        self.c.len()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
     pub fn transform(&mut self, t: &Xform) {
         let nself = self.len();
         assert!(nself <= 4);
-        let mut p = [0.0, 0.0, 0.0, 1.0];
-        for (i, v) in self.c.iter().enumerate() {
-            p[i] = *v;
+        if nself < 4 {
+            self.0.resize_vertically_mut(4, 0.0);
+            self.0[3] = 1.0;
         }
-        let mut x = t * &Point::new(p);
-        x.c.truncate(nself);
+        let x = t * self;
         *self = x;
     }
+
+    coord!(x, 0);
+    coord!(y, 1);
+    coord!(z, 2);
+    coord!(w, 3);
 }
 
 impl Index<usize> for Point {
@@ -129,7 +124,7 @@ impl Index<usize> for Point {
     /// Return the given coordinate of a Point using `[]`
     /// subscripting.
     fn index(&self, i: usize) -> &f64 {
-        &self.c[i]
+        self.get(i)
     }
 }
 
@@ -137,35 +132,33 @@ impl IndexMut<usize> for Point {
     /// Assign the given coordinate of a Point using `[]`
     /// subscripting.
     fn index_mut(&mut self, i: usize) -> &mut f64 {
-        &mut self.c[i]
+        self.get_mut(i)
     }
 }
 
-impl Mul for Point {
+impl Mul for &Point {
     type Output = f64;
 
     /// Return the dot product of two Points using `*` notation.
-    /// The points should be homogenous: the z coordinate is ignored.
+    /// The points should be homogenous: the w coordinate is ignored.
     fn mul(self, rhs: Self) -> f64 {
-        let nself = self.c.len();
-        assert_eq!(nself, rhs.c.len());
-        let mut r: f64 = 0.0;
-        for i in 0..nself {
-            r += self.c[i] * rhs.c[i];
-        }
-        r
+        assert_eq!(4, self.len());
+        assert_eq!(4, rhs.len());
+        let mut lhs = self.0.clone();
+        lhs.resize_vertically_mut(3, 0.0);
+        let mut rhs = rhs.0.clone();
+        rhs.resize_vertically_mut(3, 0.0);
+        lhs.dot(&rhs)
     }
 }
 
-impl Mul<f64> for Point {
-    type Output = Self;
+impl Mul<f64> for &Point {
+    type Output = Point;
 
     /// Return the coordinate-wise product of a Point and
     /// the given scale using `*` notation.
-    fn mul(self, rhs: f64) -> Self {
-        let mut tmp = self;
-        tmp *= rhs;
-        tmp
+    fn mul(self, rhs: f64) -> Self::Output {
+        Point(&self.0 * rhs)
     }
 }
 
@@ -175,9 +168,7 @@ impl Neg for Point {
     /// Return the negation of a Point using unary `-`
     /// notation.
     fn neg(self) -> Self {
-        let mut tmp = self;
-        tmp.negate();
-        tmp
+        Point(-self.0)
     }
 }
 
@@ -187,9 +178,7 @@ impl Add for Point {
     /// Return the coordinate-wise sum of two Points using
     /// `+` notation.
     fn add(self, rhs: Self) -> Self {
-        let mut tmp = self;
-        tmp += rhs;
-        tmp
+        Point(self.0 + rhs.0)
     }
 }
 
@@ -199,9 +188,7 @@ impl Sub for Point {
     /// Return the coordinate-wise difference of two Points
     /// using `-` notation.
     fn sub(self, rhs: Self) -> Self {
-        let mut tmp = self;
-        tmp -= rhs;
-        tmp
+        Point(self.0 - rhs.0)
     }
 }
 
@@ -209,9 +196,8 @@ impl MulAssign<f64> for Point {
     /// Multiply the point by the given scalar using `*=`
     /// notation.
     fn mul_assign(&mut self, rhs: f64) {
-        for i in 0..self.c.len() {
-            self.c[i] *= rhs;
-        }
+        let p = &*self * rhs;
+        *self = p;
     }
 }
 
@@ -219,10 +205,9 @@ impl AddAssign for Point {
     /// Adjust each coordinate of the Point by adding the
     /// corresponding coordinate of the given Point using `+=`
     /// notation. (Vector sum.)
-    fn add_assign(&mut self, rhs: Self) {
-        for i in 0..self.c.len() {
-            self.c[i] += rhs.c[i];
-        }
+    fn add_assign(&mut self, rhs: Point) {
+        let p = Point(&self.0 + rhs.0);
+        *self = p;
     }
 }
 
@@ -231,6 +216,7 @@ impl SubAssign for Point {
     /// the corresponding coordinate of the given Point
     /// using `-=` notation. (Vector sum.)
     fn sub_assign(&mut self, rhs: Self) {
-        *self += -rhs;
+        let p = Point(&self.0 - rhs.0);
+        *self = p;
     }
 }

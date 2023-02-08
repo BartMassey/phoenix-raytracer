@@ -18,8 +18,8 @@ impl Poly {
 
 // Find which side of the line `origin`→`v1` `v2` is on.
 fn side(origin: &Point, v1: &Point, v2: &Point) -> f64 {
-    let c1 = (v1[X] - origin[X]) * (v2[Y] - origin[Y]);
-    let c2 = (v2[X] - origin[X]) * (v1[Y] - origin[Y]);
+    let c1 = (v1.x() - origin.x()) * (v2.y() - origin.y());
+    let c2 = (v2.x() - origin.x()) * (v1.y() - origin.y());
     (c1 - c2).signum()
 }
 
@@ -41,10 +41,10 @@ impl Poly {
         let edges: Vec<_> = (0..pn)
             .filter_map(|i| {
                 let mut pp = [&self.p[i], &self.p[(i + 1) % pn]];
-                if pp[0][Y] > pp[1][Y] {
+                if pp[0].y() > pp[1].y() {
                     pp.swap(0, 1);
                 }
-                if pp[0][Y] < v[Y] && v[Y] < pp[1][Y] {
+                if pp[0].y() < v.y() && v.y() < pp[1].y() {
                     Some(pp)
                 } else {
                     None
@@ -73,24 +73,24 @@ impl Shape for Poly {
         ray.transform(&toi);
         let Ray { rd, ro } = ray;
 
-        let b = rd[Z];
+        let b = rd.z();
         if b.abs() < TINY {
             // The ray is parallel to the plane, so no hit.
             return None;
         }
 
-        let t = -ro[Z] / b;
+        let t = -ro.z() / b;
         if t < TINY {
             // The ray is behind the plane, so no hit.
             return None;
         }
 
-        let i = ro + rd * t;
+        let i = ro + &rd * t;
         if self.contains(&i) {
             // Return the hit information.
             Some(Intersection {
                 normal: self.cnormal.clone(),
-                at: Point::new([i[X], i[Y]]),
+                at: Point::new([i.x(), i.y()]),
                 t,
             })
         } else {
