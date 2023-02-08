@@ -33,17 +33,26 @@ code.
   some kind of adaptive space partitioning, might really
   speed things up a lot.
 
-* `ancient-raytracer` used no external code, and the
-  `classic` branch does the same.
+* There are several branches here:
 
-  This branch uses external crates where appropriate:
+  * The `main` branch uses external crates where appropriate:
 
-  * `clap` for argument parsing
-  * `rayon` for parallelism
+    * `clap` for argument parsing
+    * `rayon` for parallelism
 
-  Other things should be replaced with external crates,
-  notably the vector and matrix processing and the graphic
-  output.
+    Other things should be replaced with external crates,
+    notably the graphic output.
+
+  * The `classic` branch uses no external code, as
+    `ancient-raytracer` did.
+
+  * The `nalgebra` branch replaces the built-in `Point` code
+    with a newtype of `nalgebra::DVector`. This first crude
+    cut is quite a bit slower, so has been set aside for
+    now. The code could probably be sped up hugely by
+    getting rid of the newtype and just using
+    `nalgebra::DVector` as the `Point` type, but it gets a
+    bit hassle-filled so not for now.
 
 ## License
 
