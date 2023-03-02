@@ -8,7 +8,7 @@ U. Oregon). The exercise confirmed my dislike of C++ and
 took 20 years and some help to fully debug, but the
 resulting raytracer makes a pretty picture.
 
-![raytraced scene](demo.png)
+![chessboard with three colored spheres](demo.png)
 
 This repo represents my "port" of that raytracer to Rust.
 It's a sort of rebirth from the ashes---hence the name.
